@@ -1,2 +1,4 @@
 TrainingBMPs
+__py*
+*.pyc
 *.p
