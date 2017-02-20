@@ -1,4 +1,6 @@
 TrainingBMPs
+data3_4.p
+.ipynb*
 __py*
 *.pyc
 *.p
