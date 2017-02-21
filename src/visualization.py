@@ -43,8 +43,8 @@ class Visualization:
             self.cross_entropy[0].append(i)
             self.cross_entropy[1].append(cross_entropy)
             self.cross_entropy_plt.set_data(*self.cross_entropy)
-        self.ax1.legend(labels=['Train: {:.2f}'.format(self.train[1][-1]),
-                                'Test: {:.2f}'.format(self.test[1][-1])])
+        self.ax1.legend(labels=['Train: {:.4f}'.format(self.train[1][-1]),
+                                'Test: {:.4f}'.format(self.test[1][-1])])
         self.ax2.legend(
-            labels=['Cross Entropy: {:.2f}'.format(self.cross_entropy[1][-1])])
+            labels=['Cross Entropy: {:.4f}'.format(self.cross_entropy[1][-1])])
         self.fig.canvas.draw()
