@@ -2,6 +2,7 @@ import os, sys, time
 import pickle
 import matplotlib.pyplot as plt
 import numpy as np
+import tensorflow as tf
 
 from os.path import join, realpath, dirname
 from scipy.ndimage.filters import gaussian_laplace
@@ -70,3 +71,36 @@ def collect_images(data, filters='original'):
     x = np.array(x)
     y = np.array(y)
     return x,y
+
+def weight_variable(shape):
+    with tf.name_scope('weights'):
+        initial = tf.truncated_normal(shape, stddev=0.1)
+        weight = tf.Variable(initial)
+        variable_summaries(weight)
+        return weight
+
+def bias_variable(shape):
+    with tf.name_scope('biases'):
+        initial = tf.constant(0.1, shape=shape)
+        bias = tf.Variable(initial)
+        variable_summaries(bias)
+        return bias
+    
+def conv2d(x, W):
+    return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
+
+def max_pool_2x2(x):
+    return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+
+def variable_summaries(var):
+    """Attach a lot of summaries to a Tensor (for TensorBoard visualization)."""
+    with tf.name_scope('summaries'):
+        mean = tf.reduce_mean(var)
+        tf.summary.scalar('mean', mean)
+        with tf.name_scope('stddev'):
+            stddev = tf.sqrt(tf.reduce_mean(tf.square(var - mean)))
+        tf.summary.scalar('stddev', stddev)
+        tf.summary.scalar('max', tf.reduce_max(var))
+        tf.summary.scalar('min', tf.reduce_min(var))
+        tf.summary.histogram('histogram', var)
+
