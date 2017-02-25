@@ -1,4 +1,4 @@
 data3_4.p
-logs
+__pycache__
 *.pyc
 __py*
