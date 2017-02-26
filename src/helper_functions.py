@@ -116,3 +116,31 @@ def variable_summaries(var):
         tf.summary.scalar('min', tf.reduce_min(var))
         tf.summary.histogram('histogram', var)
 
+def load_data(self):
+    '''Load data from pickle files.'''
+    try:
+        x_train = pickle.load(open('x_train.p', 'rb'))
+        x_test = pickle.load(open('x_test.p', 'rb'))
+        y_train = pickle.load(open('y_train.p', 'rb'))
+        y_test = pickle.load(open('y_test.p', 'rb'))
+        return x_train, y_train, x_test, y_test
+    except IOError:
+        '''Images not yet split, look for main data file.'''
+        try:
+            data = pickle.load(open('data3_4.p', 'rb'))
+            _x_data, _y_data = collect_images(data)
+            target = np.zeros((len(_y_data), 10))
+            target[np.arange(len(_y_data)), _y_data] = 1
+            _y_data = target
+            # Split data using `random_state` 42 for consistency
+            x_train, x_test, y_train, y_test = train_test_split(
+                _x_data, _y_data, random_state=42)
+            pickle.dump(x_test, open('x_test.p', 'wb'))
+            pickle.dump(x_train, open('x_train.p', 'wb'))
+            pickle.dump(y_train, open('y_train.p', 'wb'))
+            pickle.dump(y_test, open('y_test.p', 'wb'))
+            return x_train, y_train, x_test, y_test
+        except IOError:
+            print("Data file missing.")
+    finally:
+        print("Image data loaded.")
