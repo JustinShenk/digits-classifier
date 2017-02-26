@@ -9,6 +9,7 @@ from scipy.ndimage.filters import gaussian_laplace
 from PIL import Image
 from scipy.ndimage import imread
 
+# Image file and folder constants for preprocessing
 C_PIXELS = 34
 CAMERAS = [1,2,4] # `k1`, `k2`, `k4` only
 FOLDERS = [3,4] # `HART_3`, `HART_4` only
@@ -17,6 +18,7 @@ DIR = '../TrainingBMPs/LS3_HART_'
 K_FILENAME = ['BSP_k','_o0_sym_']
 
 def prepare_images():
+    '''Preprocess the images and store them in `data` dictionary.'''
     data = {}
     data['original'] = []
     data['gaussian'] = []
@@ -26,7 +28,7 @@ def prepare_images():
     imgs = []
     targets = []
     gradient_images = []
-    for folder in [3, 4]: # Temporary override
+    for folder in FOLDERS:
         directory = DIR + str(folder)
         for camera in CAMERAS:
             for number in range(10):
@@ -34,11 +36,11 @@ def prepare_images():
                 image = imread(path, mode='L')
 
                 for j in range(0,len(image[0])-1,C_PIXELS):
-                    # Crop images.
-                    img = image[7:35,j+3:j+31] # 28 x 28 pixels.
+                    # Crop images to 28x28
+                    img = image[7:35,j+3:j+31]
                     imgs.append(img)
                     targets.append(number)
-                    # Get second derivative with Laplacian Gaussian.
+                    # Get image gradient with Laplacian of the Gaussian
                     laplacian = gaussian_laplace(img,sigma=2)
                     gradient_images.append(laplacian)
                     
@@ -57,12 +59,18 @@ def preview_imgs(data, n = 20, gaussian = False):
             plt.show()
                 
 def save_pickle(data, path='data.p'):
+    '''Save images in accessible file.'''
     pickle.dump(data, open(path,'wb'))
 
 def load_pickle(path='data.p'):
+    '''Load images from pickle file.'''
     return pickle.load(open(path, 'rb'))
 
 def collect_images(data, filters='original'):
+    '''Retreive images with labels from data.
+    args: 
+        filters: 'original', 'gaussian'        
+    '''
     x = []
     y = []
     for index,img in enumerate(data[filters]):
@@ -73,6 +81,7 @@ def collect_images(data, filters='original'):
     return x,y
 
 def weight_variable(shape):
+    '''TensorFlow helper function for creating weight variable.'''
     with tf.name_scope('weights'):
         initial = tf.truncated_normal(shape, stddev=0.1)
         weight = tf.Variable(initial)
@@ -80,6 +89,7 @@ def weight_variable(shape):
         return weight
 
 def bias_variable(shape):
+    '''TensorFlow helper function for creating bias variable.'''
     with tf.name_scope('biases'):
         initial = tf.constant(0.1, shape=shape)
         bias = tf.Variable(initial)
@@ -87,9 +97,11 @@ def bias_variable(shape):
         return bias
     
 def conv2d(x, W):
+    '''TensorFlow helper function for creating convolutional layer.'''
     return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
 
 def max_pool_2x2(x):
+    '''TensorFlow helper function for creating max pooling layer.'''
     return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
 def variable_summaries(var):
