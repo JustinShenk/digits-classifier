@@ -8,17 +8,17 @@ class Visualization:
     train = ([0], [0])
     cross_entropy = ([], [])
 
-    def __init__(self, epochs=200):
+    def __init__(self, steps=200):
         """Initialize the figure with 2 subplots and 4 line plots."""
         self.fig = plt.figure('Digit Classification')
         self.ax1 = self.fig.add_subplot(121)
         self.ax2 = self.fig.add_subplot(122)
 
         self.ax1.set_title('Accuracy')
-        self.ax1.set_xlim([0, epochs])
+        self.ax1.set_xlim([0, steps])
         self.ax1.set_ylim([0, 1.1])
         self.ax2.set_title('Loss')
-        self.ax2.set_xlim([0, epochs])
+        self.ax2.set_xlim([0, steps])
         self.ax2.set_ylim([0, 100])
 
         self.train_plt, = self.ax1.plot([0], [0])
