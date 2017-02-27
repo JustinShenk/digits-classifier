@@ -116,7 +116,7 @@ def variable_summaries(var):
         tf.summary.scalar('min', tf.reduce_min(var))
         tf.summary.histogram('histogram', var)
 
-def load_data(self):
+def load_data():
     '''Load data from pickle files.'''
     try:
         x_train = pickle.load(open('x_train.p', 'rb'))
